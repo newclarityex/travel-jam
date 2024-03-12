@@ -1,6 +1,9 @@
 name: Release
 
-on: push
+on:
+  push:
+    branches:
+      - release
 
 env:
   # update with the name of the main binary
