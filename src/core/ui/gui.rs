@@ -61,34 +61,27 @@ pub fn gui_system(
             });
 
         egui::Area::new("pause_menu")
-            .anchor(Align2::CENTER_CENTER, [0., 0.])
+            .anchor(Align2::LEFT_CENTER, [32., 0.])
             .order(egui::Order::Tooltip)
             .show(contexts.ctx_mut(), |ui| {
-                let area_rect = Rect::from_center_size(Pos2::ZERO, Vec2::splat(4.));
-
-                ui.painter_at(area_rect).add(RectShape::filled(
-                    area_rect,
-                    Rounding::same(0.),
-                    Color32::RED,
-                ));
-                ui.vertical_centered(|ui| {
-                    ui.heading(RichText::new("Paused").strong().size(32.));
-                    if ui
-                        .button(RichText::new("Unpause").strong().size(32.))
-                        .on_hover_cursor(egui::CursorIcon::PointingHand)
-                        .clicked()
-                    {
-                        next_pause_state.set(PauseState::Running);
-                    }
-                    if ui
-                        .button(RichText::new("Exit").strong().size(32.))
-                        .on_hover_cursor(egui::CursorIcon::PointingHand)
-                        .clicked()
-                    {
-                        next_pause_state.set(PauseState::Running);
-                        next_game_state.set(GameState::MainMenu);
-                    }
-                });
+                ui.heading(RichText::new("Paused").strong().size(48.));
+                ui.add_space(32.);
+                if ui
+                    .button(RichText::new("Resume").strong().size(32.))
+                    .on_hover_cursor(egui::CursorIcon::PointingHand)
+                    .clicked()
+                {
+                    next_pause_state.set(PauseState::Running);
+                }
+                ui.add_space(8.);
+                if ui
+                    .button(RichText::new("Exit").strong().size(32.))
+                    .on_hover_cursor(egui::CursorIcon::PointingHand)
+                    .clicked()
+                {
+                    next_pause_state.set(PauseState::Running);
+                    next_game_state.set(GameState::MainMenu);
+                }
             });
     }
 }
