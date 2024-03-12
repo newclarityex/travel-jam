@@ -13,7 +13,7 @@ env:
 
 jobs:
   # Build for wasm
-  build-wasm:
+  release-wasm:
     environment: production
     runs-on: ubuntu-latest
 
