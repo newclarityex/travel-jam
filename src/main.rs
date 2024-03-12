@@ -34,5 +34,7 @@ fn setup_camera(mut commands: Commands) {
     // window height = 1600 world units
     camera_bundle.projection.scaling_mode = ScalingMode::FixedVertical(240.0);
 
+    println!("test camera");
+
     commands.spawn(camera_bundle);
 }
