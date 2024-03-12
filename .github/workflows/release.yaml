@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - release
+      - main
 
 env:
   # update with the name of the main binary
@@ -13,7 +13,7 @@ env:
 
 jobs:
   # Build for wasm
-  release-wasm:
+  build-wasm:
     environment: production
     runs-on: ubuntu-latest
 
