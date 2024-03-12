@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
+use bevy::{asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode};
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
