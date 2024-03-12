@@ -7,13 +7,15 @@ pub fn main_menu_system(mut contexts: EguiContexts, mut next_state: ResMut<NextS
     egui::Area::new("area")
         .anchor(Align2::CENTER_CENTER, [0., 0.])
         .show(contexts.ctx_mut(), |ui| {
-            ui.heading("Travel <3");
-            if ui
-                .button(RichText::new("Start Game").strong().size(32.))
-                .on_hover_cursor(egui::CursorIcon::PointingHand)
-                .clicked()
-            {
-                next_state.set(GameState::Game);
-            }
+            ui.vertical_centered(|ui| {
+                ui.heading("Travel <3");
+                if ui
+                    .button(RichText::new("Start Game").strong().size(32.))
+                    .on_hover_cursor(egui::CursorIcon::PointingHand)
+                    .clicked()
+                {
+                    next_state.set(GameState::Game);
+                }
+            });
         });
 }

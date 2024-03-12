@@ -14,7 +14,10 @@ impl Plugin for PlayerPlugin {
         app.add_systems(OnEnter(GameState::Game), setup)
             .add_systems(OnEnter(PauseState::Paused), on_pause)
             .add_systems(OnEnter(PauseState::Running), on_unpause)
-            .add_systems(Update, controls::handle_pause_input)
+            .add_systems(
+                Update,
+                controls::handle_pause_input.run_if(in_state(GameState::Game)),
+            )
             .add_systems(Update, on_animation_complete)
             .add_systems(Update, on_animation_looped)
             .add_systems(OnExit(GameState::Game), destroy);
@@ -40,7 +43,7 @@ fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    let texture = asset_server.load("sprites/player/walking.png");
+    let texture = asset_server.load("./sprites/player/walking.png");
     let layout = TextureAtlasLayout::from_grid(Vec2::new(16.0, 20.0), 8, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
 
@@ -61,10 +64,7 @@ fn setup(
         Player {
             velocity: Vec2::new(0., 0.),
         },
-        SpriteSheetBundle {
-            transform: Transform::from_scale(Vec3::splat(6.0)),
-            ..default()
-        },
+        SpriteSheetBundle::default(),
         animations_manager,
     ));
 }

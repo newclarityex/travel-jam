@@ -1,5 +1,6 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, render::camera::ScalingMode};
 use bevy_egui::EguiPlugin;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 mod core;
 
@@ -21,18 +22,17 @@ fn main() {
         .insert_state(PauseState::Running)
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(EguiPlugin)
+        .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(core::CorePlugin)
         .add_systems(Startup, setup_camera)
         .run();
 }
 
 fn setup_camera(mut commands: Commands) {
-    // commands.spawn(Camera2dBundle {
-    //     projection: OrthographicProjection {
-    //         scale: 1.0,
-    //         ..default()
-    //     },
-    //     ..default()
-    // });
-    commands.spawn(Camera2dBundle::default());
+    let mut camera_bundle = Camera2dBundle::default();
+
+    // window height = 1600 world units
+    camera_bundle.projection.scaling_mode = ScalingMode::FixedVertical(240.0);
+
+    commands.spawn(camera_bundle);
 }
