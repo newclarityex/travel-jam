@@ -175,20 +175,20 @@ fn update_animations(
                     animations_manager.index = 0;
                     ev_loop.send(AnimationLoopEvent {
                         entity,
-                        animation: current_animation,
+                        animation: current_animation.clone(),
                     });
                 } else {
                     animations_manager.clear();
                     ev_complete.send(AnimationCompleteEvent {
                         entity,
-                        animation: current_animation,
+                        animation: current_animation.clone(),
                     });
                 }
             }
 
             ev_frame.send(AnimationFrameEvent {
                 entity,
-                animation: current_animation,
+                animation: current_animation.clone(),
                 frame: animations_manager.index,
             });
 

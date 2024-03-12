@@ -2,6 +2,7 @@ use crate::GameState;
 use bevy::prelude::*;
 use bevy_egui::egui::{FontData, FontDefinitions, FontFamily};
 use bevy_egui::EguiContexts;
+use egui_extras::install_image_loaders;
 
 mod gui;
 mod main_menu;
@@ -9,7 +10,7 @@ mod main_menu;
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_fonts);
+        app.add_systems(Startup, setup);
         app.add_systems(
             Update,
             main_menu::main_menu_system.run_if(in_state(GameState::MainMenu)),
@@ -18,7 +19,7 @@ impl Plugin for UIPlugin {
     }
 }
 
-fn setup_fonts(mut contexts: EguiContexts) {
+fn setup(mut contexts: EguiContexts) {
     let mut fonts = FontDefinitions::default();
     let font_data = FontData::from_static(include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -37,4 +38,6 @@ fn setup_fonts(mut contexts: EguiContexts) {
 
     let egui_ctx = contexts.ctx_mut();
     egui_ctx.set_fonts(fonts);
+
+    install_image_loaders(&egui_ctx);
 }

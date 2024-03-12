@@ -2,9 +2,11 @@ use bevy::{prelude::*, sprite, sprite::Anchor};
 
 use crate::{GameState, PauseState};
 
-use crate::core::animations::{AnimationData, AnimationsManager};
+use crate::core::animations::{
+    AnimationCompleteEvent, AnimationData, AnimationLoopEvent, AnimationsManager,
+};
 
-use super::animations::{AnimationCompleteEvent, AnimationLoopEvent};
+mod controls;
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
@@ -12,6 +14,7 @@ impl Plugin for PlayerPlugin {
         app.add_systems(OnEnter(GameState::Game), setup)
             .add_systems(OnEnter(PauseState::Paused), on_pause)
             .add_systems(OnEnter(PauseState::Running), on_unpause)
+            .add_systems(Update, controls::handle_pause_input)
             .add_systems(Update, on_animation_complete)
             .add_systems(Update, on_animation_looped)
             .add_systems(OnExit(GameState::Game), destroy);
@@ -68,25 +71,25 @@ fn setup(
 
 fn on_animation_complete(
     mut ev_complete: EventReader<AnimationCompleteEvent>,
-    mut query: Query<&mut AnimationsManager, With<Player>>,
+    query: Query<&AnimationsManager, With<Player>>,
 ) {
     for ev in ev_complete.read() {
-        let Ok(mut animations_manager) = query.get_mut(ev.entity) else {
-            continue;
-        };
-        println!("Animation {:?} finished!", ev.animation);
+        if query.get(ev.entity).is_err() {
+            return;
+        }
+        // println!("Animation {:?} finished!", ev.animation);
     }
 }
 
 fn on_animation_looped(
     mut ev_loop: EventReader<AnimationLoopEvent>,
-    mut query: Query<&mut AnimationsManager, With<Player>>,
+    query: Query<&AnimationsManager, With<Player>>,
 ) {
     for ev in ev_loop.read() {
-        let Ok(mut animations_manager) = query.get_mut(ev.entity) else {
-            continue;
-        };
-        println!("Animation {:?} looped!", ev.animation);
+        if query.get(ev.entity).is_err() {
+            return;
+        }
+        // println!("Animation {:?} looped!", ev.animation);
     }
 }
 
