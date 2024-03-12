@@ -1,9 +1,6 @@
 name: Release
 
-on:
-  push:
-    tags:
-      - "*"
+on: push
 
 env:
   # update with the name of the main binary
