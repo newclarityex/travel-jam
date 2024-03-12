@@ -20,6 +20,7 @@ fn main() {
     App::new()
         .insert_state(GameState::MainMenu)
         .insert_state(PauseState::Running)
+        .insert_resource(AssetMetaCheck::Never)
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(EguiPlugin)
         .add_plugins(WorldInspectorPlugin::new())
