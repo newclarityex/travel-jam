@@ -25,6 +25,7 @@ jobs:
           cargo install wasm-bindgen-cli
 
       - name: Build
+        uses: Swatinem/rust-cache@v2.7.3
         run: |
           cargo build --release --no-default-features --target wasm32-unknown-unknown
 
