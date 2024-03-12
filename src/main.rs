@@ -1,8 +1,9 @@
 use bevy::{asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode};
 use bevy_egui::EguiPlugin;
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_framepace::FramepacePlugin;
 
 mod core;
+mod debug;
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
 enum GameState {
@@ -22,8 +23,9 @@ fn main() {
         .insert_state(PauseState::Running)
         .insert_resource(AssetMetaCheck::Never)
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(FramepacePlugin)
         .add_plugins(EguiPlugin)
-        .add_plugins(WorldInspectorPlugin::new())
+        .add_plugins(debug::DebugPlugin)
         .add_plugins(core::CorePlugin)
         .add_systems(Startup, setup_camera)
         .run();
