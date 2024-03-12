@@ -6,7 +6,7 @@ env:
   # update with the name of the main binary
   binary: travel-jam
   add_binaries_to_github_release: false
-  itch_target: newclarityex/bevy-travel-test
+  itch_target: newclarityex/bevy-travel-draft
 
 jobs:
   # Build for wasm
