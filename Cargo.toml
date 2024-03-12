@@ -9,7 +9,6 @@ edition = "2021"
 bevy = "0.13.0"
 bevy-inspector-egui = "0.23.4"
 bevy_egui = "0.25.0"
-bevy_framepace = "0.15.0"
 egui_extras = { version = "0.26.2", features = ["image"] }
 image = { version = "0.25.0", features = ["png"] }
 
