@@ -1,5 +1,7 @@
-use crate::{PauseState, SettingsState};
-use bevy::prelude::*;
+use crate::{core::animations::AnimationsManager, PauseState, SettingsState};
+use bevy::{prelude::*, transform};
+
+use super::Player;
 
 pub fn handle_pause_input(
     state: Res<State<PauseState>>,
@@ -18,4 +20,43 @@ pub fn handle_pause_input(
             }
         }
     }
+}
+
+pub fn handle_move_input(
+    keys: Res<ButtonInput<KeyCode>>,
+    mut player_query: Query<(&mut Player, &mut Transform, &mut AnimationsManager)>,
+    time: Res<Time>,
+) {
+    let mut direction = Vec2::ZERO;
+    if keys.pressed(KeyCode::KeyW) {
+        direction.y += 1.;
+    }
+    if keys.pressed(KeyCode::KeyA) {
+        direction.x -= 1.;
+    }
+    if keys.pressed(KeyCode::KeyS) {
+        direction.y -= 1.;
+    }
+    if keys.pressed(KeyCode::KeyD) {
+        direction.x += 1.;
+    }
+
+    let direction = direction.normalize_or_zero();
+
+    let Ok((mut player, mut transform, mut animations_manager)) = player_query.get_single_mut() else {
+        return;
+    };
+
+    let new_velocity = direction * player.speed;
+
+    if direction != Vec2::ZERO {
+        animations_manager.time_scale = 1.;
+    } else {
+        animations_manager.time_scale = 0.;
+    }
+
+    player.velocity = new_velocity;
+    player.position += new_velocity * time.delta_seconds();
+
+    transform.translation = player.position.extend(0.);
 }
