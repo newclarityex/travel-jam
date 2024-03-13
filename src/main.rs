@@ -16,10 +16,17 @@ enum PauseState {
     Running,
 }
 
+#[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
+enum SettingsState {
+    Open,
+    Closed,
+}
+
 fn main() {
     App::new()
         .insert_state(GameState::MainMenu)
         .insert_state(PauseState::Running)
+        .insert_state(SettingsState::Closed)
         .insert_resource(AssetMetaCheck::Never)
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(EguiPlugin)
