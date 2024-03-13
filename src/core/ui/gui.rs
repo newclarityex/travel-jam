@@ -13,7 +13,6 @@ pub fn gui_system(
     mut contexts: EguiContexts,
     state: Res<State<PauseState>>,
     mut next_pause_state: ResMut<NextState<PauseState>>,
-    mut next_game_state: ResMut<NextState<GameState>>,
 ) {
     let state = state.get();
     let pause_icon = egui::Image::new(egui::include_image!(
@@ -23,7 +22,7 @@ pub fn gui_system(
     .fit_to_original_size(1.);
     egui::Area::new("pause_btn")
         .anchor(Align2::RIGHT_TOP, [-6., 6.])
-        .order(egui::Order::Middle)
+        .order(egui::Order::Background)
         .show(contexts.ctx_mut(), |ui| {
             if ui
                 .add(egui::Button::image(pause_icon).fill(Color32::TRANSPARENT))
@@ -40,48 +39,4 @@ pub fn gui_system(
                 };
             }
         });
-
-    if *state == PauseState::Paused {
-        egui::Area::new("pause_menu_background")
-            .anchor(Align2::LEFT_TOP, [0., 0.])
-            .order(egui::Order::Foreground)
-            .show(contexts.ctx_mut(), |ui| {
-                if ui
-                    .add(
-                        egui::Button::new("")
-                            .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 127))
-                            .stroke(Stroke::NONE)
-                            .min_size(ui.available_size()),
-                    )
-                    .on_hover_cursor(egui::CursorIcon::PointingHand)
-                    .clicked()
-                {
-                    next_pause_state.set(PauseState::Running);
-                }
-            });
-
-        egui::Area::new("pause_menu")
-            .anchor(Align2::LEFT_CENTER, [32., 0.])
-            .order(egui::Order::Tooltip)
-            .show(contexts.ctx_mut(), |ui| {
-                ui.heading(RichText::new("Paused").strong().size(48.));
-                ui.add_space(32.);
-                if ui
-                    .button(RichText::new("Resume").strong().size(32.))
-                    .on_hover_cursor(egui::CursorIcon::PointingHand)
-                    .clicked()
-                {
-                    next_pause_state.set(PauseState::Running);
-                }
-                ui.add_space(8.);
-                if ui
-                    .button(RichText::new("Exit").strong().size(32.))
-                    .on_hover_cursor(egui::CursorIcon::PointingHand)
-                    .clicked()
-                {
-                    next_pause_state.set(PauseState::Running);
-                    next_game_state.set(GameState::MainMenu);
-                }
-            });
-    }
 }
