@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 mod animations;
-mod music;
+mod audio;
 mod player;
 mod ui;
 
@@ -12,7 +12,7 @@ impl Plugin for CorePlugin {
             ui::UIPlugin,
             animations::AnimationPlugin,
             player::PlayerPlugin,
-            music::MusicPlugin,
+            audio::AudioPlugin,
         ));
     }
 }
