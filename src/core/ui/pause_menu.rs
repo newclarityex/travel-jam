@@ -20,26 +20,26 @@ pub fn pause_menu_system(
         .anchor(Align2::LEFT_CENTER, [32., 0.])
         .order(egui::Order::Middle)
         .show(contexts.ctx_mut(), |ui| {
-            ui.heading(RichText::new("Paused").strong().size(48.));
+            ui.heading(RichText::new("Paused").size(48.));
             ui.add_space(32.);
             if ui
-                .button(RichText::new("Resume").strong().size(32.))
+                .button(RichText::new("Resume").size(32.))
                 .on_hover_cursor(egui::CursorIcon::PointingHand)
                 .clicked()
             {
                 next_pause_state.set(PauseState::Running);
             }
-            ui.add_space(16.);
+            ui.add_space(8.);
             if ui
-                .button(RichText::new("Settings").strong().size(32.))
+                .button(RichText::new("Settings").size(32.))
                 .on_hover_cursor(egui::CursorIcon::PointingHand)
                 .clicked()
             {
                 next_settings_state.set(SettingsState::Open);
             }
-            ui.add_space(16.);
+            ui.add_space(8.);
             if ui
-                .button(RichText::new("Exit").strong().size(32.))
+                .button(RichText::new("Exit").size(32.))
                 .on_hover_cursor(egui::CursorIcon::PointingHand)
                 .clicked()
             {

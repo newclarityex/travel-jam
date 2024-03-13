@@ -20,7 +20,9 @@ impl Plugin for UIPlugin {
         app.add_systems(Startup, setup)
             .add_systems(
                 Update,
-                main_menu::main_menu_system.run_if(in_state(GameState::MainMenu)),
+                main_menu::main_menu_system.run_if(
+                    in_state(GameState::MainMenu).and_then(in_state(SettingsState::Closed)),
+                ),
             )
             .add_systems(
                 Update,
@@ -62,7 +64,8 @@ fn setup(mut contexts: EguiContexts) {
 
     egui_ctx.style_mut(|style| {
         style.spacing.button_padding = Vec2::new(16., 8.);
-        style.spacing.item_spacing = Vec2::splat(0.)
+        style.spacing.item_spacing = Vec2::splat(8.);
+        style.visuals.override_text_color = Some(Color32::WHITE);
     });
 
     install_image_loaders(&egui_ctx);
