@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 mod animations;
+mod music;
 mod player;
 mod ui;
 
@@ -11,6 +12,7 @@ impl Plugin for CorePlugin {
             ui::UIPlugin,
             animations::AnimationPlugin,
             player::PlayerPlugin,
+            music::MusicPlugin,
         ));
     }
 }

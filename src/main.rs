@@ -1,5 +1,6 @@
 use bevy::{asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode};
 use bevy_egui::EguiPlugin;
+use bevy_kira_audio::AudioPlugin;
 
 mod core;
 mod debug;
@@ -28,10 +29,13 @@ fn main() {
         .insert_state(PauseState::Running)
         .insert_state(SettingsState::Closed)
         .insert_resource(AssetMetaCheck::Never)
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
-        .add_plugins(EguiPlugin)
-        .add_plugins(debug::DebugPlugin)
-        .add_plugins(core::CorePlugin)
+        .add_plugins((
+            DefaultPlugins.set(ImagePlugin::default_nearest()),
+            AudioPlugin,
+            EguiPlugin,
+            debug::DebugPlugin,
+            core::CorePlugin,
+        ))
         .add_systems(Startup, setup_camera)
         .run();
 }
