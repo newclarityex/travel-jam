@@ -1,4 +1,7 @@
-use bevy::{asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode};
+use bevy::{
+    asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode, window::PrimaryWindow,
+    window::WindowMode,
+};
 use bevy_egui::EguiPlugin;
 use bevy_kira_audio::AudioPlugin;
 
@@ -40,11 +43,14 @@ fn main() {
         .run();
 }
 
-fn setup_camera(mut commands: Commands) {
+fn setup_camera(mut commands: Commands, mut window_query: Query<&mut Window, With<PrimaryWindow>>) {
     let mut camera_bundle = Camera2dBundle::default();
 
     // window height = 1600 world units
     camera_bundle.projection.scaling_mode = ScalingMode::FixedVertical(240.0);
 
     commands.spawn(camera_bundle);
+
+    let mut window = window_query.get_single_mut().unwrap();
+    window.mode = WindowMode::Fullscreen;
 }
