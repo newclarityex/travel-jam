@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - build
+    branches:
+      - main
 
 env:
   # update with the name of the main binary
