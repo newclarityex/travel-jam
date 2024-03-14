@@ -82,7 +82,7 @@ impl AnimationsManager {
             .get(&new_animation)
             .expect("Can't play animation that isn't loaded!");
 
-        self.current_animation = Some(new_animation.into());
+        self.current_animation = Some(new_animation);
         self.update_timer_duration();
     }
 
@@ -94,7 +94,9 @@ impl AnimationsManager {
     }
 
     // Set animation if it's not already running
-    pub fn set_animation(&mut self, new_animation: String) {
+    pub fn set_animation<S: Into<String>>(&mut self, new_animation: S) {
+        let new_animation = new_animation.into();
+
         match &self.current_animation {
             Some(current_animation) => {
                 if *current_animation != new_animation {
