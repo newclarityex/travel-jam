@@ -40,7 +40,8 @@ pub enum PlayerAnimation {
 
 #[derive(Component, Default)]
 pub struct Player {
-    speed: f32,
+    max_speed: f32,
+    acceleration: f32,
     velocity: Vec2,
     position: Vec2,
 }
@@ -68,7 +69,11 @@ fn setup(
     animations_manager.play("walking");
 
     commands.spawn((
-        Player { speed: 50., ..default() },
+        Player {
+            max_speed: 50.,
+            acceleration: 0.05,
+            ..default()
+        },
         SpriteSheetBundle::default(),
         animations_manager,
     ));

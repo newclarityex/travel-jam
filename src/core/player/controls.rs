@@ -1,5 +1,5 @@
 use crate::{core::animations::AnimationsManager, PauseState, SettingsState};
-use bevy::{prelude::*, transform};
+use bevy::prelude::*;
 
 use super::Player;
 
@@ -24,7 +24,12 @@ pub fn handle_pause_input(
 
 pub fn handle_move_input(
     keys: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<(&mut Player, &mut Transform, &mut AnimationsManager)>,
+    mut player_query: Query<(
+        &mut Player,
+        &mut Transform,
+        &mut AnimationsManager,
+        &mut Sprite,
+    )>,
     time: Res<Time>,
 ) {
     let mut direction = Vec2::ZERO;
@@ -41,13 +46,13 @@ pub fn handle_move_input(
         direction.x += 1.;
     }
 
-    let direction = direction.normalize_or_zero();
+    let normalized_direction = direction.normalize_or_zero();
 
-    let Ok((mut player, mut transform, mut animations_manager)) = player_query.get_single_mut() else {
+    let Ok((mut player, mut transform, mut animations_manager, mut sprite)) =
+        player_query.get_single_mut()
+    else {
         return;
     };
-
-    let new_velocity = direction * player.speed;
 
     if direction != Vec2::ZERO {
         animations_manager.time_scale = 1.;
@@ -55,8 +60,18 @@ pub fn handle_move_input(
         animations_manager.time_scale = 0.;
     }
 
+    if direction.x < 0. {
+        sprite.flip_x = true;
+    } else if direction.x > 0. {
+        sprite.flip_x = false;
+    }
+
+    let new_velocity = player.velocity.lerp(
+        direction * player.max_speed,
+        1. / player.acceleration * time.delta_seconds(),
+    );
+
     player.velocity = new_velocity;
     player.position += new_velocity * time.delta_seconds();
-
     transform.translation = player.position.extend(0.);
 }
