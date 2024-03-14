@@ -16,6 +16,11 @@ impl Plugin for PlayerPlugin {
             .add_systems(OnEnter(PauseState::Running), on_unpause)
             .add_systems(
                 Update,
+                (controls::handle_move_input)
+                    .run_if(in_state(GameState::Game).and_then(in_state(PauseState::Running))),
+            )
+            .add_systems(
+                Update,
                 controls::handle_pause_input.run_if(in_state(GameState::Game)),
             )
             .add_systems(Update, on_animation_complete)
@@ -33,9 +38,12 @@ pub enum PlayerAnimation {
     Walking,
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Player {
+    max_speed: f32,
+    acceleration: f32,
     velocity: Vec2,
+    position: Vec2,
 }
 
 fn setup(
@@ -62,7 +70,9 @@ fn setup(
 
     commands.spawn((
         Player {
-            velocity: Vec2::new(0., 0.),
+            max_speed: 50.,
+            acceleration: 0.05,
+            ..default()
         },
         SpriteSheetBundle::default(),
         animations_manager,
