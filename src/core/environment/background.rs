@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy_parallax::{CreateParallaxEvent, LayerData, LayerRepeat, LayerSpeed, RepeatStrategy};
 
-use crate::MainCamera;
+use crate::core::camera::MainCamera;
+
 pub struct BackgroundPlugin;
 impl Plugin for BackgroundPlugin {
     fn build(&self, app: &mut App) {
@@ -15,7 +16,8 @@ fn background_layer_default() -> LayerData {
         cols: 1,
         rows: 1,
         scale: Vec2::ONE,
-        position: Vec2::new(0., 96.),
+        // position: Vec2::new(0., 96.),
+        position: Vec2::new(0., -80.),
         ..Default::default()
     }
 }

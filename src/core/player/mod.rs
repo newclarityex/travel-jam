@@ -28,7 +28,12 @@ impl Plugin for PlayerPlugin {
             .add_systems(OnEnter(PauseState::Paused), on_pause)
             .add_systems(OnEnter(PauseState::Running), on_unpause)
             .add_systems(OnEnter(GameStage::Sledding), start_sledding)
-            .add_systems(OnEnter(PlayerState::Sliding), movement::stop_pushing)
+            .add_systems(
+                PreUpdate,
+                movement::reset_force
+                    .run_if(in_state(GameState::Game))
+                    .run_if(in_state(PauseState::Running)),
+            )
             .add_systems(
                 Update,
                 (
@@ -41,7 +46,7 @@ impl Plugin for PlayerPlugin {
                     .run_if(in_state(GameStage::Sledding)),
             )
             .add_systems(
-                Update,
+                (PostUpdate),
                 (
                     movement::update_camera_position,
                     movement::update_hide_state,
@@ -55,10 +60,16 @@ impl Plugin for PlayerPlugin {
 #[derive(Component, Default)]
 pub struct Player {
     pub default_grav: f32,
+    pub max_fall_vel: Option<f32>,
+    pub gliding_scale: Option<f32>,
+    pub float_val: f32,
     push_force: f32,
     jump_vel: f32,
     lean_force: f32,
     pub collisions: HashSet<Entity>,
+    pub current_yarn_collected: i32,
+    pub current_catnip_collected: i32,
+    pub score: i32,
 }
 
 #[derive(Component)]
@@ -74,11 +85,17 @@ fn setup(
 ) {
     next_player_state.set(PlayerState::Pushing);
 
-    let player = commands
+    let mut player = commands
         .spawn((
             Player {
+                current_yarn_collected: 0,
+                current_catnip_collected: 0,
+                score: 0,
                 default_grav: 3.,
-                push_force: 1000.,
+                max_fall_vel: None,
+                gliding_scale: None,
+                float_val: 0.,
+                push_force: 500.,
                 jump_vel: 250.,
                 lean_force: 5.,
                 collisions: HashSet::new(),
@@ -89,19 +106,21 @@ fn setup(
             ActiveEvents::COLLISION_EVENTS,
             Velocity::default(),
             Collider::cuboid(1.0, 1.0),
-            ColliderMassProperties::MassProperties(MassProperties {
+            AdditionalMassProperties::MassProperties(MassProperties {
                 local_center_of_mass: Vect::new(0., -3.),
                 mass: 5.,
                 principal_inertia: 200.,
             }),
+            ReadMassProperties::default(),
             Ccd::enabled(),
             Damping {
-                linear_damping: 0.25,
-                angular_damping: 0.8,
+                // angular_damping: 5.0,
+                angular_damping: 50.0,
+                ..default()
             },
             Friction {
-                coefficient: 0.05,
                 combine_rule: CoefficientCombineRule::Min,
+                ..default()
             },
             SpatialBundle {
                 transform: Transform::from_translation(STARTING_POSITION.extend(2.)),
@@ -110,6 +129,10 @@ fn setup(
             GravityScale(3.),
             CleanupEntity,
         ))
+        .insert(Restitution {
+            coefficient: -5.,
+            combine_rule: CoefficientCombineRule::Min,
+        })
         .id();
 
     let player_sprite = commands
@@ -128,8 +151,8 @@ fn handle_exit(mut next_player_state: ResMut<NextState<PlayerState>>) {
     next_player_state.set(PlayerState::Pushing);
 }
 
-fn start_sledding(mut player_query: Query<&mut Transform, With<Player>>) {
-    let Ok(mut transform) = player_query.get_single_mut() else {
+fn start_sledding(mut player_query: Query<(&mut Player, &mut Transform)>) {
+    let Ok((mut player, mut transform)) = player_query.get_single_mut() else {
         eprintln!("Player missing!");
         return;
     };
@@ -137,6 +160,9 @@ fn start_sledding(mut player_query: Query<&mut Transform, With<Player>>) {
     transform.translation.x = STARTING_POSITION.x;
     transform.translation.y = STARTING_POSITION.y;
     transform.rotation = Quat::default();
+    player.current_yarn_collected = 0;
+    player.current_catnip_collected = 0;
+    player.score = 0;
 }
 
 fn on_pause(mut query: Query<&mut AnimationsManager, With<Player>>) {
