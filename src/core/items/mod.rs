@@ -91,13 +91,8 @@ impl Plugin for ItemsPlugin {
     }
 }
 
-fn load_items(mut inventory: ResMut<Inventory>) {
-    *inventory = Inventory::default();
-}
-
 fn setup_items(mut inventory: ResMut<Inventory>) {
     *inventory = Inventory::default();
-    inventory.items.insert(Item::RocketBooster);
 }
 
 #[derive(Component)]
