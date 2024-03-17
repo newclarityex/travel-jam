@@ -1,16 +1,25 @@
-use crate::{GameState, SettingsState};
+use crate::{
+    core::{GameState, SettingsState},
+    MainCamera,
+};
 use bevy::prelude::*;
 use bevy_egui::{
-    egui::{self, util::undoer::Settings},
+    egui::{self, util::undoer::Settings, Align2, RichText},
     EguiContexts,
 };
-use egui::{Align2, RichText};
 
 pub fn main_menu_system(
     mut contexts: EguiContexts,
     mut next_game_state: ResMut<NextState<GameState>>,
     mut next_settings_state: ResMut<NextState<SettingsState>>,
+    mut camera_query: Query<&mut Transform, With<MainCamera>>,
 ) {
+    let Ok(mut transform) = camera_query.get_single_mut() else {
+        eprintln!("Missing Camera");
+        return;
+    };
+    transform.translation = Vec3::ZERO;
+
     egui::Area::new("main_menu")
         .anchor(Align2::LEFT_CENTER, [32., 0.])
         .order(egui::Order::Background)

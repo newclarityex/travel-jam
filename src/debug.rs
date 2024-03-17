@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_rapier2d::prelude::*;
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
 enum DebugState {
@@ -12,6 +13,7 @@ impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
         app.insert_state(DebugState::Closed)
             .add_plugins(WorldInspectorPlugin::new().run_if(in_state(DebugState::Open)))
+            // .add_plugins(RapierDebugRenderPlugin::default())
             .add_systems(Update, handle_debug_input);
     }
 }

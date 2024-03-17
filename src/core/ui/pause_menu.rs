@@ -1,14 +1,12 @@
-use crate::{GameState, PauseState, SettingsState};
+use crate::core::{pause_manager::PauseState, GameState, SettingsState};
 use bevy::prelude::*;
-use bevy_egui::egui::util::undoer::Settings;
 use bevy_egui::{
     egui::{
-        self, epaint::RectShape, Color32, Painter, Pos2, Rect, Rounding, Stroke, Style,
-        TextureOptions, Vec2,
+        self, epaint::RectShape, util::undoer::Settings, Align2, Color32, Painter, Pos2, Rect,
+        RichText, Rounding, Stroke, Style, TextureOptions, Vec2,
     },
     EguiContexts,
 };
-use egui::{Align2, RichText};
 
 pub fn pause_menu_system(
     mut contexts: EguiContexts,
