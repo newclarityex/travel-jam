@@ -1,10 +1,7 @@
-use crate::{
-    core::{GameState, SettingsState},
-    MainCamera,
-};
+use crate::core::{camera::MainCamera, GameState, SettingsState};
 use bevy::prelude::*;
 use bevy_egui::{
-    egui::{self, util::undoer::Settings, Align2, RichText},
+    egui::{self, util::undoer::Settings, Align2, Color32, RichText},
     EguiContexts,
 };
 
@@ -18,13 +15,18 @@ pub fn main_menu_system(
         eprintln!("Missing Camera");
         return;
     };
-    transform.translation = Vec3::ZERO;
 
     egui::Area::new("main_menu")
         .anchor(Align2::LEFT_CENTER, [32., 0.])
         .order(egui::Order::Background)
         .show(contexts.ctx_mut(), |ui| {
-            ui.heading(RichText::new("Travel <3").size(48.));
+            ui.heading(
+                RichText::new("When Cats Fly")
+                    .size(48.)
+                    .italics()
+                    .color(Color32::from_rgb(255, 120, 120))
+                    .background_color(Color32::from_black_alpha(200)),
+            );
             ui.add_space(32.);
 
             if ui

@@ -1,4 +1,5 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::Anchor};
+use bevy_collider_gen::Edges;
 use bevy_rapier2d::prelude::*;
 use std::{
     collections::{HashMap, HashSet},
@@ -15,9 +16,13 @@ use super::{pause_manager::PauseState, player::Player, CleanupEntity, GameStage,
 
 mod background;
 mod chunk_rendering;
+mod hill_coords;
 
 #[derive(Component)]
 pub struct Yarn;
+
+#[derive(Component)]
+pub struct BigYarn;
 
 #[derive(Component)]
 pub struct Catnip;
@@ -48,6 +53,34 @@ impl Plugin for EnvironmentPlugin {
 }
 
 fn load_assets(asset_server: Res<AssetServer>, mut hitbox_assets: ResMut<HitboxAssets>) {
+    // let hitbox_path = "sprites/hill/hill_hitbox.png";
+    // let hitbox_handle: Handle<Image> = asset_server.load(hitbox_path);
+
+    // let sprite_path = "sprites/hill/hill.png";
+    // let sprite_handle: Handle<Image> = asset_server.load(sprite_path);
+
+    // hitbox_assets.0.insert(
+    //     "hill".to_string(),
+    //     HitboxAsset {
+    //         hitbox_handle,
+    //         sprite_handle,
+    //     },
+    // );
+
+    let hitbox_path = "sprites/yarn/big_yarn.png";
+    let hitbox_handle: Handle<Image> = asset_server.load(hitbox_path);
+
+    let sprite_path = "sprites/yarn/big_yarn.png";
+    let sprite_handle: Handle<Image> = asset_server.load(sprite_path);
+
+    hitbox_assets.0.insert(
+        "big_yarn".to_string(),
+        HitboxAsset {
+            hitbox_handle,
+            sprite_handle,
+        },
+    );
+
     let hitbox_path = "sprites/yarn/yarn.png";
     let hitbox_handle: Handle<Image> = asset_server.load(hitbox_path);
 
@@ -80,37 +113,50 @@ fn load_assets(asset_server: Res<AssetServer>, mut hitbox_assets: ResMut<HitboxA
 #[derive(Component)]
 struct SledHill;
 
-const HILL_OFFSET: Vec2 = Vec2::new(-600., 199.);
-const HILL_COORDS: &'static [Vec2] = &[
-    // Bottom Right
-    Vec2::new(600., -270.),
-    // Bottom Left
-    Vec2::new(-600., -270.),
-    // Top Left
-    Vec2::new(-600., 238.),
-    // Ledge
-    Vec2::new(-343., 238.),
-    Vec2::new(-337., 237.),
-    Vec2::new(-331., 235.),
-    Vec2::new(-329., 234.),
-    Vec2::new(-200., 107.),
-    Vec2::new(-129., 48.),
-    Vec2::new(-49., -9.),
-    Vec2::new(109., -93.),
-    Vec2::new(257., -150.),
-    // Vec2::new(-49.5, -500.),
-    Vec2::new(470., -208.),
-    Vec2::new(600., -270.),
-];
+const HILL_OFFSET: Vec2 = Vec2::new(-712., 166.);
 
 const FLOOR_HITBOX_OFFSET: f32 = -9.;
 #[derive(Component)]
 struct FloorBody;
 
-fn setup_environment(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn((
+fn setup_environment(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    hitbox_assets: Res<HitboxAssets>,
+    image_assets: Res<Assets<Image>>,
+) {
+    // let hill = hitbox_assets.0.get("hill").unwrap().clone();
+    // let Some(sprite_image) = image_assets.get(hill.hitbox_handle) else {
+    //     eprintln!("Failed to get sprite image from handler");
+    //     return;
+    // };
+    // let edges = Edges::from(sprite_image);
+    // let coords = edges.single_image_edge_translated();
+    // let mut prev_coord: Option<Vec2> = None;
+    // let mut coords: Vec<Vec2> = coords
+    //     .into_iter()
+    //     .filter(|coord| {
+    //         if let Some(found_prev) = prev_coord {
+    //             if coord.x != found_prev.x && coord.y != found_prev.y {
+    //                 prev_coord = Some(*coord);
+    //                 return true;
+    //             }
+    //             return false;
+    //         } else {
+    //             prev_coord = Some(*coord);
+    //             return true;
+    //         }
+    //     })
+    //     .collect();
+
+    // coords.push(Vec2::new(-600., 238.));
+
+    // println!("{:?}", coords);
+
+    let hill_coords = commands.spawn((
         SledHill,
-        Collider::polyline(HILL_COORDS.to_vec(), None),
+        Collider::polyline(hill_coords::HILL_COORDS.to_vec(), None),
+        // Collider::polyline(coords, None),
         SpriteBundle {
             texture: asset_server.load("sprites/hill/hill.png"),
             transform: Transform::from_translation(HILL_OFFSET.extend(11.)),

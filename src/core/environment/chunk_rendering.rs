@@ -1,4 +1,4 @@
-use super::{BobbingSprite, Catnip, Yarn};
+use super::{BigYarn, BobbingSprite, Catnip, Yarn};
 use crate::core::HitboxAssets;
 use crate::core::{player::Player, CleanupEntity};
 use bevy::prelude::*;
@@ -12,18 +12,21 @@ use std::{
 };
 
 const CHUNK_SIZE: f32 = 256.;
-const FLOOR_OFFSET: f32 = 8.;
+const FLOOR_OFFSET: f32 = -56.;
 
-const RENDER_DISTANCE_Y: u16 = 1;
-const RENDER_DISTANCE_X: u16 = 2;
-const COLLECTABLES_Y_FLOOR: f32 = 0.;
-const COLLECTABLES_X_FLOOR: f32 = 0.;
+const RENDER_DISTANCE_Y: u16 = 2;
+const RENDER_DISTANCE_X: u16 = 3;
+const COLLECTABLES_Y_FLOOR: f32 = 16.;
+const COLLECTABLES_X_FLOOR: f32 = 16.;
 
-// Yarn spawned per chunk
-const YARN_SPAWN_RATE: i32 = 5;
+// Yarn bundles spawned per chunk
+const YARN_SPAWN_RATE: i32 = 1;
 
 // Chance for catnip to spawn per chunk
-const CATNIP_SPAWN_CHANCE: f32 = 0.1;
+const BIG_YARN_SPAWN_CHANCE: f32 = 0.15;
+
+// Chance for catnip to spawn per chunk
+const CATNIP_SPAWN_CHANCE: f32 = 0.15;
 
 #[derive(Resource)]
 pub struct CurrentChunks(pub HashSet<IVec2>);
@@ -107,7 +110,55 @@ pub fn update_chunks(
                 continue;
             };
 
-            let yarn = hitbox_assets.0.get("yarn").unwrap().clone();
+            let init_angle = rng.gen_range((0.)..(2. * PI));
+
+            for j in 0..3 {
+                let mut spawn_location = spawn_location.clone();
+                let angle = PI * 2. / 3. * (j as f32) + init_angle;
+                let bundle_distance = 25.;
+                spawn_location += Vec2::from_angle(angle) * bundle_distance;
+
+                let yarn = hitbox_assets.0.get("yarn").unwrap().clone();
+                let Some(sprite_image) = image_assets.get(yarn.hitbox_handle) else {
+                    eprintln!("Failed to get sprite image from handler");
+                    continue;
+                };
+                let Some(collider) = single_convex_hull_collider_translated(sprite_image) else {
+                    eprintln!("Failed to create yarn collider");
+                    continue;
+                };
+
+                commands.spawn((
+                    Yarn,
+                    BobbingSprite {
+                        spawn_pos: spawn_location,
+                        offset: rng.gen_range((0.)..(PI * 2.)),
+                        elapsed: 0.,
+                    },
+                    SpriteBundle {
+                        texture: yarn.sprite_handle,
+                        transform: Transform::from_translation(spawn_location.extend(2.)),
+                        ..default()
+                    },
+                    collider,
+                    Sensor,
+                    RenderCleanup { chunk: *chunk },
+                    CleanupEntity,
+                ));
+            }
+        }
+
+        if rng.gen_bool(BIG_YARN_SPAWN_CHANCE.into()) {
+            let spawn_location = Vec2::new(
+                rng.gen_range(chunk_x_range.clone()),
+                rng.gen_range(chunk_y_range.clone()),
+            );
+
+            if spawn_location.x < COLLECTABLES_X_FLOOR || spawn_location.y < COLLECTABLES_Y_FLOOR {
+                continue;
+            };
+
+            let yarn = hitbox_assets.0.get("big_yarn").unwrap().clone();
             let Some(sprite_image) = image_assets.get(yarn.hitbox_handle) else {
                 eprintln!("Failed to get sprite image from handler");
                 continue;
@@ -118,7 +169,7 @@ pub fn update_chunks(
             };
 
             commands.spawn((
-                Yarn,
+                BigYarn,
                 BobbingSprite {
                     spawn_pos: spawn_location,
                     offset: rng.gen_range((0.)..(PI * 2.)),
@@ -176,6 +227,7 @@ pub fn update_chunks(
         }
 
         if chunk.y == 0 {
+            println!("spawn floor at {:?}", chunk.x);
             commands.spawn((
                 FloorChunk,
                 SpriteBundle {

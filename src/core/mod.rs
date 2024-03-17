@@ -6,6 +6,7 @@ use self::items::ItemsPlugin;
 
 mod animations;
 mod audio;
+mod camera;
 mod environment;
 mod items;
 mod pause_manager;
@@ -56,6 +57,7 @@ impl Plugin for CorePlugin {
                 environment::EnvironmentPlugin,
                 items::ItemsPlugin,
                 pause_manager::PauseManagerPlugin,
+                camera::CameraPlugin,
             ))
             .add_systems(OnExit(GameState::Game), cleanup_system);
     }
