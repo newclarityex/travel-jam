@@ -1,106 +1,142 @@
-use bevy::{prelude::*, sprite, sprite::Anchor};
+use bevy::{prelude::*, sprite::Anchor};
+use bevy_rapier2d::prelude::*;
+use std::collections::HashSet;
 
-use crate::{GameState, PauseState};
-
-use crate::core::animations::{
-    AnimationCompleteEvent, AnimationData, AnimationLoopEvent, AnimationsManager,
+use crate::core::{
+    animations::{AnimationData, AnimationsManager},
+    pause_manager::PauseState,
+    GameState,
 };
 
-mod controls;
+use super::{CleanupEntity, GameStage};
+
+mod collisions;
+mod movement;
+
+#[derive(States, Clone, Eq, PartialEq, Hash, Debug)]
+pub enum PlayerState {
+    Pushing,
+    Sliding,
+}
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Game), setup)
+        app.insert_state(PlayerState::Pushing)
+            .add_systems(OnEnter(GameState::Game), setup)
+            .add_systems(OnExit(GameState::Game), handle_exit)
             .add_systems(OnEnter(PauseState::Paused), on_pause)
             .add_systems(OnEnter(PauseState::Running), on_unpause)
+            .add_systems(OnEnter(GameStage::Sledding), start_sledding)
+            .add_systems(OnEnter(PlayerState::Sliding), movement::stop_pushing)
             .add_systems(
                 Update,
-                (controls::handle_move_input)
-                    .run_if(in_state(GameState::Game).and_then(in_state(PauseState::Running))),
+                (
+                    movement::handle_pushing.run_if(in_state(PlayerState::Pushing)),
+                    movement::handle_sliding.run_if(in_state(PlayerState::Sliding)),
+                    collisions::update_collisions,
+                )
+                    .run_if(in_state(GameState::Game))
+                    .run_if(in_state(PauseState::Running))
+                    .run_if(in_state(GameStage::Sledding)),
             )
             .add_systems(
                 Update,
-                controls::handle_pause_input.run_if(in_state(GameState::Game)),
-            )
-            .add_systems(Update, on_animation_complete)
-            .add_systems(Update, on_animation_looped)
-            .add_systems(OnExit(GameState::Game), destroy);
+                (
+                    movement::update_camera_position,
+                    movement::update_hide_state,
+                )
+                    .run_if(in_state(GameState::Game))
+                    .run_if(in_state(PauseState::Running)),
+            );
     }
-}
-pub enum PlayerState {
-    Idle,
-    Walking,
-}
-
-pub enum PlayerAnimation {
-    Idle,
-    Walking,
 }
 
 #[derive(Component, Default)]
 pub struct Player {
-    max_speed: f32,
-    acceleration: f32,
-    velocity: Vec2,
-    position: Vec2,
+    pub default_grav: f32,
+    push_force: f32,
+    jump_vel: f32,
+    lean_force: f32,
+    pub collisions: HashSet<Entity>,
 }
+
+#[derive(Component)]
+struct PlayerSprite;
+
+const STARTING_POSITION: Vec2 = Vec2::new(-952., 445.);
 
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut next_player_state: ResMut<NextState<PlayerState>>,
 ) {
-    let texture = asset_server.load("sprites/player/walking.png");
-    let layout = TextureAtlasLayout::from_grid(Vec2::new(16.0, 20.0), 8, 1, None, None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
+    next_player_state.set(PlayerState::Pushing);
 
-    let walking_animation = AnimationData {
-        texture,
-        layout: texture_atlas_layout,
-        frame_count: 8,
-        frame_durations: vec![180; 8],
-        anchor: Anchor::Center,
+    let player = commands
+        .spawn((
+            Player {
+                default_grav: 3.,
+                push_force: 1000.,
+                jump_vel: 250.,
+                lean_force: 5.,
+                collisions: HashSet::new(),
+            },
+            ExternalForce::default(),
+            ExternalImpulse::default(),
+            RigidBody::Dynamic,
+            ActiveEvents::COLLISION_EVENTS,
+            Velocity::default(),
+            Collider::cuboid(1.0, 1.0),
+            ColliderMassProperties::MassProperties(MassProperties {
+                local_center_of_mass: Vect::new(0., -3.),
+                mass: 5.,
+                principal_inertia: 200.,
+            }),
+            Ccd::enabled(),
+            Damping {
+                linear_damping: 0.25,
+                angular_damping: 0.8,
+            },
+            Friction {
+                coefficient: 0.05,
+                combine_rule: CoefficientCombineRule::Min,
+            },
+            SpatialBundle {
+                transform: Transform::from_translation(STARTING_POSITION.extend(2.)),
+                ..default()
+            },
+            GravityScale(3.),
+            CleanupEntity,
+        ))
+        .id();
+
+    let player_sprite = commands
+        .spawn((
+            PlayerSprite,
+            SpriteSheetBundle {
+                texture: asset_server.load("sprites/player/cat.png"),
+                transform: Transform::from_xyz(0., 16., 1.),
+                ..default()
+            },
+        ))
+        .set_parent(player);
+}
+
+fn handle_exit(mut next_player_state: ResMut<NextState<PlayerState>>) {
+    next_player_state.set(PlayerState::Pushing);
+}
+
+fn start_sledding(mut player_query: Query<&mut Transform, With<Player>>) {
+    let Ok(mut transform) = player_query.get_single_mut() else {
+        eprintln!("Player missing!");
+        return;
     };
 
-    let mut animations_manager = AnimationsManager::new();
-    animations_manager.load_animation("walking", walking_animation);
-    animations_manager.looping = true;
-    animations_manager.play("walking");
-
-    commands.spawn((
-        Player {
-            max_speed: 50.,
-            acceleration: 0.05,
-            ..default()
-        },
-        SpriteSheetBundle::default(),
-        animations_manager,
-    ));
-}
-
-fn on_animation_complete(
-    mut ev_complete: EventReader<AnimationCompleteEvent>,
-    query: Query<&AnimationsManager, With<Player>>,
-) {
-    for ev in ev_complete.read() {
-        if query.get(ev.entity).is_err() {
-            return;
-        }
-        // println!("Animation {:?} finished!", ev.animation);
-    }
-}
-
-fn on_animation_looped(
-    mut ev_loop: EventReader<AnimationLoopEvent>,
-    query: Query<&AnimationsManager, With<Player>>,
-) {
-    for ev in ev_loop.read() {
-        if query.get(ev.entity).is_err() {
-            return;
-        }
-        // println!("Animation {:?} looped!", ev.animation);
-    }
+    transform.translation.x = STARTING_POSITION.x;
+    transform.translation.y = STARTING_POSITION.y;
+    transform.rotation = Quat::default();
 }
 
 fn on_pause(mut query: Query<&mut AnimationsManager, With<Player>>) {
@@ -116,10 +152,4 @@ fn on_unpause(mut query: Query<&mut AnimationsManager, With<Player>>) {
     };
 
     animations_manager.paused = false;
-}
-
-fn destroy(mut commands: Commands, query: Query<Entity, With<Player>>) {
-    for entity in query.iter() {
-        commands.entity(entity).despawn();
-    }
 }

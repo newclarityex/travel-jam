@@ -1,4 +1,4 @@
-use crate::{GameState, PauseState, SettingsState};
+use crate::core::{pause_manager::PauseState, GameStage, GameState, SettingsState};
 use bevy::prelude::*;
 use bevy_egui::{
     egui::{
@@ -13,11 +13,20 @@ mod gui;
 mod main_menu;
 mod pause_menu;
 mod settings_menu;
+mod shop_menu;
+mod stats_display;
+
+#[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
+enum IngameMenu {
+    Stats,
+    Shop,
+}
 
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup)
+        app.insert_state(IngameMenu::Stats)
+            .add_systems(Startup, setup)
             .add_systems(
                 Update,
                 main_menu::main_menu_system.run_if(
@@ -26,19 +35,26 @@ impl Plugin for UIPlugin {
             )
             .add_systems(
                 Update,
-                pause_menu::pause_menu_system
+                (pause_menu::pause_menu_system, darken_bg)
                     .run_if(in_state(PauseState::Paused).and_then(in_state(SettingsState::Closed))),
             )
             .add_systems(
                 Update,
-                settings_menu::settings_menu_system.run_if(in_state(SettingsState::Open)),
+                (settings_menu::settings_menu_system, darken_bg)
+                    .run_if(in_state(SettingsState::Open)),
             )
+            .add_systems(Update, gui::gui_system.run_if(in_state(GameState::Game)))
+            .add_systems(OnEnter(GameStage::Stopped), on_player_stop)
             .add_systems(
                 Update,
-                darken_bg
-                    .run_if(in_state(PauseState::Paused).or_else(in_state(SettingsState::Open))),
-            )
-            .add_systems(Update, gui::gui_system.run_if(in_state(GameState::Game)));
+                (
+                    stats_display::stats_display_system.run_if(in_state(IngameMenu::Stats)),
+                    shop_menu::shop_menu_system
+                        .run_if(in_state(IngameMenu::Shop))
+                        .after(stats_display::stats_display_system),
+                )
+                    .run_if(in_state(GameStage::Stopped)),
+            );
     }
 }
 
@@ -87,4 +103,8 @@ fn darken_bg(mut contexts: EguiContexts) {
                 Color32::from_black_alpha(127),
             ));
         });
+}
+
+fn on_player_stop(mut next_ingame_menu_state: ResMut<NextState<IngameMenu>>) {
+    next_ingame_menu_state.set(IngameMenu::Stats);
 }

@@ -1,12 +1,13 @@
-use crate::core::audio::{MusicVolume, SFXVolume};
-use crate::{PauseState, SettingsState};
+use crate::core::{
+    audio::{MusicVolume, SFXVolume},
+    SettingsState,
+};
 use bevy::prelude::*;
 use bevy_egui::{
-    egui::{self, Slider, TextureOptions},
+    egui::{self, Align2, RichText, Slider, TextureOptions},
     EguiContexts,
 };
 use bevy_kira_audio::AudioChannel;
-use egui::{Align2, RichText};
 
 pub fn settings_menu_system(
     mut contexts: EguiContexts,

@@ -1,9 +1,7 @@
-use std::time::Duration;
-
 use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
 
-use crate::GameState;
+use crate::core::GameState;
 
 #[derive(Resource)]
 pub struct MusicChannel;

@@ -109,7 +109,7 @@ impl AnimationsManager {
         }
     }
 
-    fn get_current(&self) -> Option<&AnimationData> {
+    pub fn get_current(&self) -> Option<&AnimationData> {
         if let Some(current_animation) = &self.current_animation {
             self.animation_map.get(current_animation)
         } else {
