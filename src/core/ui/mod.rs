@@ -2,8 +2,10 @@ use crate::core::{pause_manager::PauseState, GameStage, GameState, SettingsState
 use bevy::prelude::*;
 use bevy_egui::{
     egui::{
-        epaint::RectShape, Align, Align2, Area, Color32, FontData, FontDefinitions, FontFamily,
-        Frame, Id, LayerId, Order, Painter, Rounding, Sense, Vec2,
+        epaint::RectShape,
+        style::{WidgetVisuals, Widgets},
+        Align, Align2, Area, Color32, FontData, FontDefinitions, FontFamily, Frame, Id, LayerId,
+        Order, Painter, Rounding, Sense, Stroke, Vec2,
     },
     EguiContexts,
 };
@@ -17,7 +19,7 @@ mod shop_menu;
 mod stats_display;
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
-enum IngameMenu {
+pub enum IngameMenu {
     Stats,
     Shop,
 }
@@ -82,6 +84,32 @@ fn setup(mut contexts: EguiContexts) {
         style.spacing.button_padding = Vec2::new(16., 8.);
         style.spacing.item_spacing = Vec2::splat(8.);
         style.visuals.override_text_color = Some(Color32::WHITE);
+        let shared = WidgetVisuals {
+            bg_fill: Color32::default(),
+            rounding: Rounding::ZERO,
+            weak_bg_fill: Color32::default(),
+            bg_stroke: Stroke::default(),
+            fg_stroke: Stroke::default(),
+            expansion: 0.,
+        };
+        style.visuals.widgets = Widgets {
+            inactive: WidgetVisuals {
+                bg_fill: Color32::from_black_alpha(200),
+                weak_bg_fill: Color32::from_black_alpha(200),
+                ..shared.clone()
+            },
+            hovered: WidgetVisuals {
+                bg_fill: Color32::from_black_alpha(160),
+                weak_bg_fill: Color32::from_black_alpha(160),
+                ..shared.clone()
+            },
+            active: WidgetVisuals {
+                bg_fill: Color32::from_black_alpha(230),
+                weak_bg_fill: Color32::from_black_alpha(230),
+                ..shared.clone()
+            },
+            ..default()
+        }
     });
 
     install_image_loaders(&egui_ctx);

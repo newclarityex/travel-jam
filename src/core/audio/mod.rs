@@ -24,6 +24,8 @@ impl Plugin for AudioPlugin {
             .insert_resource(SFXVolume(1.))
             .add_systems(OnEnter(GameState::MainMenu), start_menu_music)
             .add_systems(OnExit(GameState::MainMenu), stop_menu_music)
+            .add_systems(OnEnter(GameState::Game), start_game_music)
+            .add_systems(OnExit(GameState::Game), stop_game_music)
             .add_systems(Update, update_volume);
     }
 }
@@ -31,17 +33,38 @@ impl Plugin for AudioPlugin {
 #[derive(Resource)]
 struct MenuMusic(Handle<AudioInstance>);
 
+#[derive(Resource)]
+struct GameMusic(Handle<AudioInstance>);
+
 fn start_menu_music(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     music_channel: Res<AudioChannel<MusicChannel>>,
 ) {
-    let asset_handle = asset_server.load("audio/music/menu_music.mp3");
+    let asset_handle = asset_server.load("audio/music/menu.ogg");
     let instance_handle = music_channel.play(asset_handle).looped().handle();
     commands.insert_resource(MenuMusic(instance_handle));
 }
 
 fn stop_menu_music(handle: Res<MenuMusic>, mut audio_instances: ResMut<Assets<AudioInstance>>) {
+    let Some(instance) = audio_instances.get_mut(&handle.0) else {
+        return;
+    };
+
+    instance.stop(AudioTween::default());
+}
+
+fn start_game_music(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    music_channel: Res<AudioChannel<MusicChannel>>,
+) {
+    let asset_handle = asset_server.load("audio/music/game.ogg");
+    let instance_handle = music_channel.play(asset_handle).looped().handle();
+    commands.insert_resource(GameMusic(instance_handle));
+}
+
+fn stop_game_music(handle: Res<GameMusic>, mut audio_instances: ResMut<Assets<AudioInstance>>) {
     let Some(instance) = audio_instances.get_mut(&handle.0) else {
         return;
     };

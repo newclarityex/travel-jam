@@ -75,7 +75,7 @@ impl Plugin for ItemsPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Inventory::default())
             .insert_resource(ItemPrices::new())
-            .add_systems(OnEnter(GameState::Game), setup_items)
+            .add_systems(Startup, setup_items)
             .add_systems(OnEnter(GameStage::Stopped), reset_booster)
             .add_systems(OnExit(GameState::Game), reset_booster)
             .add_systems(

@@ -51,14 +51,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Balloon").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::SingleBalloon)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::SingleBalloon)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::SingleBalloon, &item_prices.0);
@@ -72,14 +74,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy 3x Balloon").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::TripleBalloons)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::TripleBalloons)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::TripleBalloons, &item_prices.0);
@@ -93,14 +97,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Balloon Ship").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::HotAirBalloon)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::HotAirBalloon)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::HotAirBalloon, &item_prices.0);
@@ -115,14 +121,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Glider").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::GliderBalloon)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::GliderBalloon)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::GliderBalloon, &item_prices.0);
@@ -137,14 +145,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Soda Boost").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::SodaBooster)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::SodaBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::SodaBooster, &item_prices.0);
@@ -158,14 +168,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Fireworks").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::FireworkBooster)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::FireworkBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::FireworkBooster, &item_prices.0);
@@ -179,14 +191,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Rocket").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::RocketBooster)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::RocketBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::RocketBooster, &item_prices.0);
@@ -201,14 +215,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Racer Box").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::RacingVehicle)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::RacingVehicle)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::RacingVehicle, &item_prices.0);
@@ -222,14 +238,16 @@ pub fn shop_menu_system(
                                 |ui| {
                                     ui.vertical_centered(|ui| {
                                         ui.label(RichText::new("Buy Skiing Box").size(18.));
-                                        let res = ui.add(Button::image_and_text(
-                                            yarn_icon.clone(),
-                                            item_prices
-                                                .0
-                                                .get(&Item::SkiingVehicle)
-                                                .unwrap_or(&-1)
-                                                .to_string(),
-                                        ));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::SkiingVehicle)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::SkiingVehicle, &item_prices.0);

@@ -1,6 +1,7 @@
 use bevy::{animation, prelude::*, sprite::Anchor};
 use std::{collections::HashMap, time::Duration};
 
+#[derive(Clone)]
 pub struct AnimationData {
     pub texture: Handle<Image>,
     pub layout: Handle<TextureAtlasLayout>,
@@ -31,7 +32,7 @@ pub struct AnimationLoopEvent {
 #[derive(Debug, Clone)]
 struct InvalidAnimationError;
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct AnimationsManager {
     timer: Timer,
     animation_map: HashMap<String, AnimationData>,

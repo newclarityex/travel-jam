@@ -41,9 +41,10 @@ impl Plugin for EnvironmentPlugin {
             )
             .add_systems(
                 OnEnter(GameStage::Sledding),
-                (chunk_rendering::cleanup_chunks),
+                (chunk_rendering::cleanup_chunks.after(chunk_rendering::update_chunks)),
             )
-            .add_systems(OnEnter(GameState::Game), (chunk_rendering::cleanup_chunks))
+            .add_systems(OnExit(GameState::Game), (chunk_rendering::cleanup_chunks))
+            .add_systems(OnEnter(GameState::Game), add_instructions)
             .add_systems(
                 PreUpdate,
                 (chunk_rendering::update_chunks, update_floor_hitbox)
@@ -213,4 +214,37 @@ fn update_bobbing_sprites(
         transform.translation.y = bobbing_sprite.spawn_pos.y
             + BOBBING_OFFSET * (bobbing_sprite.elapsed * 2. + bobbing_sprite.offset).sin();
     }
+}
+
+#[derive(Component)]
+struct Instructions;
+
+fn add_instructions(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn((
+        Instructions,
+        SpriteBundle {
+            texture: asset_server.load("sprites/inputs/sliding_instructions.png"),
+            transform: Transform::from_xyz(-952., 535., 10.),
+            ..default()
+        },
+        CleanupEntity,
+    ));
+    commands.spawn((
+        Instructions,
+        SpriteBundle {
+            texture: asset_server.load("sprites/inputs/jump_instructions.png"),
+            transform: Transform::from_xyz(-952., 510., 10.),
+            ..default()
+        },
+        CleanupEntity,
+    ));
+    commands.spawn((
+        Instructions,
+        SpriteBundle {
+            texture: asset_server.load("sprites/inputs/lean_instructions.png"),
+            transform: Transform::from_xyz(-952., 485., 10.),
+            ..default()
+        },
+        CleanupEntity,
+    ));
 }

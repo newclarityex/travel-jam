@@ -36,10 +36,13 @@ impl Plugin for PlayerPlugin {
             )
             .add_systems(
                 Update,
+                collisions::update_collisions.run_if(in_state(GameState::Game)),
+            )
+            .add_systems(
+                Update,
                 (
                     movement::handle_pushing.run_if(in_state(PlayerState::Pushing)),
                     movement::handle_sliding.run_if(in_state(PlayerState::Sliding)),
-                    collisions::update_collisions,
                 )
                     .run_if(in_state(GameState::Game))
                     .run_if(in_state(PauseState::Running))
@@ -75,6 +78,9 @@ pub struct Player {
 #[derive(Component)]
 struct PlayerSprite;
 
+#[derive(Component)]
+struct CollectionHitbox;
+
 const STARTING_POSITION: Vec2 = Vec2::new(-952., 445.);
 
 fn setup(
@@ -97,7 +103,7 @@ fn setup(
                 float_val: 0.,
                 push_force: 500.,
                 jump_vel: 250.,
-                lean_force: 5.,
+                lean_force: 10.,
                 collisions: HashSet::new(),
             },
             ExternalForce::default(),
@@ -143,6 +149,16 @@ fn setup(
                 transform: Transform::from_xyz(0., 16., 1.),
                 ..default()
             },
+        ))
+        .set_parent(player);
+
+    let collection_hitbox = commands
+        .spawn((
+            CollectionHitbox,
+            Sensor,
+            Transform::from_xyz(0., 4., 0.),
+            Collider::ball(22.),
+            ActiveEvents::COLLISION_EVENTS,
         ))
         .set_parent(player);
 }
