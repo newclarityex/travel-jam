@@ -57,7 +57,7 @@ pub struct ItemPrices(pub HashMap<Item, i32>);
 impl ItemPrices {
     fn new() -> ItemPrices {
         let mut price_map = HashMap::new();
-        price_map.insert(Item::SodaBooster, 10);
+        price_map.insert(Item::SodaBooster, 5);
         price_map.insert(Item::FireworkBooster, 30);
         price_map.insert(Item::RocketBooster, 250);
         price_map.insert(Item::RacingVehicle, 10);
@@ -309,7 +309,7 @@ fn apply_booster(
                 Booster {
                     max_fuel: 1.,
                     fuel: 1.,
-                    force: 2_500.,
+                    force: 5_000.,
                     disconnected: false,
                 },
                 animations_manager,
@@ -522,7 +522,7 @@ fn apply_balloons(
             .set_parent(player_entity);
     } else if inventory.items.contains(&Item::HotAirBalloon) {
         player_grav_scale.0 = player.default_grav * 0.6;
-        player.max_fall_vel = Some(-75.);
+        player.max_fall_vel = Some(-300.);
         player.float_val = 0.25;
 
         if let Ok((current_balloon, _, _, hot_air_balloon, _)) = current_balloon {
@@ -562,7 +562,7 @@ fn apply_balloons(
             .set_parent(player_entity);
     } else if inventory.items.contains(&Item::TripleBalloons) {
         player_grav_scale.0 = player.default_grav * 0.75;
-        player.max_fall_vel = Some(-125.);
+        player.max_fall_vel = Some(-400.);
         player.float_val = 0.1;
 
         if let Ok((current_balloon, _, triple_balloons, _, _)) = current_balloon {
@@ -588,7 +588,7 @@ fn apply_balloons(
             .set_parent(player_entity);
     } else if inventory.items.contains(&Item::SingleBalloon) {
         player_grav_scale.0 = player.default_grav * 0.9;
-        player.max_fall_vel = Some(-150.);
+        player.max_fall_vel = Some(-500.);
         player.float_val = 0.1;
 
         if let Ok((current_balloon, single_balloon, _, _, _)) = current_balloon {
