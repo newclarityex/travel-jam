@@ -102,9 +102,8 @@ impl Plugin for ItemsPlugin {
 
 fn setup_items(mut inventory: ResMut<Inventory>) {
     *inventory = Inventory::default();
-    // inventory.items.insert(Item::RocketBooster);
-    // inventory.items.insert(Item::GliderBalloon);
-    // inventory.items.insert(Item::SkiingVehicle);
+    // inventory.items.insert(Item::SodaBooster);
+    // inventory.items.insert(Item::SingleBalloon);
 }
 
 #[derive(Component)]
