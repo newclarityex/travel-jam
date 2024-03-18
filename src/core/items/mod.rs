@@ -695,7 +695,7 @@ fn apply_vehicle(
         }
 
         friction.coefficient = 0.1;
-        damping.linear_damping = 0.15;
+        damping.linear_damping = 0.1;
 
         let vehicle = commands
             .spawn((
