@@ -111,7 +111,7 @@ pub fn handle_sliding(
         force.force += gliding_force * gliding_direction * gliding_scale;
     }
 
-    if velocity.linvel.length() < 5. {
+    if velocity.linvel.length() < 5. && player.collisions.len() > 0 {
         next_game_stage.set(GameStage::Stopped);
         next_player_state.set(PlayerState::Pushing);
         next_ingame_state.set(IngameMenu::Stats);
