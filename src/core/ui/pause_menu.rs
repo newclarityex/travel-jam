@@ -1,4 +1,4 @@
-use crate::core::{pause_manager::PauseState, GameState, SettingsState};
+use crate::core::{pause_manager::PauseState, GameStage, GameState, SettingsState};
 use bevy::prelude::*;
 use bevy_egui::{
     egui::{
@@ -8,11 +8,15 @@ use bevy_egui::{
     EguiContexts,
 };
 
+use super::IngameMenu;
+
 pub fn pause_menu_system(
     mut contexts: EguiContexts,
     mut next_pause_state: ResMut<NextState<PauseState>>,
     mut next_game_state: ResMut<NextState<GameState>>,
     mut next_settings_state: ResMut<NextState<SettingsState>>,
+    mut next_ingame_state: ResMut<NextState<IngameMenu>>,
+    mut next_game_stage: ResMut<NextState<GameStage>>,
 ) {
     egui::Area::new("pause_menu")
         .anchor(Align2::LEFT_CENTER, [32., 0.])
@@ -43,6 +47,8 @@ pub fn pause_menu_system(
             {
                 next_pause_state.set(PauseState::Running);
                 next_game_state.set(GameState::MainMenu);
+                next_ingame_state.set(IngameMenu::Stats);
+                next_game_stage.set(GameStage::Sledding);
             }
         });
 }

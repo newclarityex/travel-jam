@@ -1,6 +1,7 @@
 use super::{Player, PlayerSprite, PlayerState};
 use crate::core::{
-    animations::AnimationsManager, camera::MainCamera, items::VehicleTextures, GameStage,
+    animations::AnimationsManager, camera::MainCamera, items::VehicleTextures, ui::IngameMenu,
+    GameStage,
 };
 use bevy::{ecs::entity, prelude::*};
 use bevy_parallax::ParallaxMoveEvent;
@@ -63,6 +64,7 @@ pub fn handle_sliding(
     )>,
     mut next_game_stage: ResMut<NextState<GameStage>>,
     mut next_player_state: ResMut<NextState<PlayerState>>,
+    mut next_ingame_state: ResMut<NextState<IngameMenu>>,
 ) {
     let Ok((player, mut velocity, mut force, mut impulse, transform, mass, mut damping)) =
         player_query.get_single_mut()
@@ -109,9 +111,10 @@ pub fn handle_sliding(
         force.force += gliding_force * gliding_direction * gliding_scale;
     }
 
-    if velocity.linvel.length() < 1. {
+    if velocity.linvel.length() < 5. {
         next_game_stage.set(GameStage::Stopped);
         next_player_state.set(PlayerState::Pushing);
+        next_ingame_state.set(IngameMenu::Stats);
     }
 }
 

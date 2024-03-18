@@ -17,6 +17,7 @@ pub fn gui_system(
     player_query: Query<(&Transform, &Velocity), With<Player>>,
 ) {
     let Ok((player_transform, player_velocity)) = player_query.get_single() else {
+        eprintln!("Player not found");
         return;
     };
 
@@ -35,7 +36,8 @@ pub fn gui_system(
                             RichText::new(format!("{} m", distance))
                                 .size(32.)
                                 .strong()
-                                .family(egui::FontFamily::Monospace),
+                                .family(egui::FontFamily::Monospace)
+                                .color(Color32::WHITE),
                         )
                         .wrap(false),
                     );
@@ -45,7 +47,8 @@ pub fn gui_system(
                             RichText::new(format!("{} m/s", velocity))
                                 .size(32.)
                                 .strong()
-                                .family(egui::FontFamily::Monospace),
+                                .family(egui::FontFamily::Monospace)
+                                .color(Color32::WHITE),
                         )
                         .wrap(false),
                     );

@@ -2,7 +2,7 @@ use crate::core::SettingsState;
 use bevy::prelude::*;
 use bevy_rapier2d::plugin::{RapierConfiguration, TimestepMode};
 
-use super::GameState;
+use super::{animations::AnimationsManager, GameState};
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum PauseState {

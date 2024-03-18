@@ -49,8 +49,12 @@ fn update_camera_position(
 
     let distance_diff = camera.target_position - camera_transform.translation.xy();
 
+    // move_event_writer.send(ParallaxMoveEvent {
+    //     camera_move_speed: Vec2::ZERO.lerp(distance_diff, 20. * time.delta_seconds()),
+    //     camera: camera_entity,
+    // });
     move_event_writer.send(ParallaxMoveEvent {
-        camera_move_speed: Vec2::ZERO.lerp(distance_diff, 20. * time.delta_seconds()),
+        camera_move_speed: distance_diff,
         camera: camera_entity,
     });
 }
@@ -61,5 +65,6 @@ fn main_menu_camera(time: Res<Time>, mut camera_query: Query<&mut MainCamera>) {
         return;
     };
 
-    camera.target_position.x += time.delta_seconds() * 12.;
+    camera.target_position.x += time.delta_seconds() * 40.;
+    camera.target_position.y = 224.
 }

@@ -16,8 +16,8 @@ fn background_layer_default() -> LayerData {
         cols: 1,
         rows: 1,
         scale: Vec2::ONE,
-        // position: Vec2::new(0., 96.),
-        position: Vec2::new(0., -80.),
+        position: Vec2::new(0., 128.),
+        // position: Vec2::new(0., -80.),
         ..Default::default()
     }
 }

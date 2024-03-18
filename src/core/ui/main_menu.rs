@@ -1,7 +1,7 @@
 use crate::core::{camera::MainCamera, GameState, SettingsState};
 use bevy::prelude::*;
 use bevy_egui::{
-    egui::{self, util::undoer::Settings, Align2, Color32, RichText},
+    egui::{self, util::undoer::Settings, Align2, Color32, Image, RichText},
     EguiContexts,
 };
 
@@ -20,14 +20,10 @@ pub fn main_menu_system(
         .anchor(Align2::LEFT_CENTER, [32., 0.])
         .order(egui::Order::Background)
         .show(contexts.ctx_mut(), |ui| {
-            ui.heading(
-                RichText::new("When Cats Fly")
-                    .size(48.)
-                    .italics()
-                    .color(Color32::from_rgb(255, 120, 120))
-                    .background_color(Color32::from_black_alpha(200)),
-            );
-            ui.add_space(32.);
+            let title_image = Image::new(egui::include_image!("../../../assets/ui/title.png"))
+                .fit_to_original_size(0.8);
+            ui.add(title_image);
+            ui.add_space(64.);
 
             if ui
                 .button(RichText::new("Start Game").size(32.))
