@@ -35,7 +35,7 @@ pub fn stats_display_system(
                         ui.heading(RichText::new("Complete!").size(32.));
                         ui.add_space(16.);
                         Grid::new("stats_grid").min_col_width(128.).show(ui, |ui| {
-                            let distance = (player_transform.translation.x.max(0.) / 100.) as i32;
+                            let distance = (player_transform.translation.x.max(0.) / 10.) as i32;
                             ui.label(RichText::new("Distance: ").size(18.));
                             ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
                                 ui.label(RichText::new(format!("{} m", distance)).size(18.));
