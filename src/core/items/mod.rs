@@ -524,6 +524,7 @@ fn apply_balloons(
         player_grav_scale.0 = player.default_grav * 0.6;
         player.max_fall_vel = Some(-600.);
         player.float_val = 0.25;
+        player.gliding_scale = None;
 
         if let Ok((current_balloon, _, _, hot_air_balloon, _)) = current_balloon {
             if hot_air_balloon {
@@ -564,6 +565,7 @@ fn apply_balloons(
         player_grav_scale.0 = player.default_grav * 0.75;
         player.max_fall_vel = Some(-800.);
         player.float_val = 0.1;
+        player.gliding_scale = None;
 
         if let Ok((current_balloon, _, triple_balloons, _, _)) = current_balloon {
             if triple_balloons {
@@ -590,6 +592,7 @@ fn apply_balloons(
         player_grav_scale.0 = player.default_grav * 0.9;
         player.max_fall_vel = Some(-1000.);
         player.float_val = 0.1;
+        player.gliding_scale = None;
 
         if let Ok((current_balloon, single_balloon, _, _, _)) = current_balloon {
             if single_balloon {
