@@ -103,7 +103,7 @@ fn setup(
                 float_val: 0.,
                 push_force: 500.,
                 jump_vel: 250.,
-                lean_force: 15.,
+                lean_force: 10.,
                 collisions: HashSet::new(),
             },
             ExternalForce::default(),
