@@ -57,15 +57,15 @@ pub struct ItemPrices(pub HashMap<Item, i32>);
 impl ItemPrices {
     fn new() -> ItemPrices {
         let mut price_map = HashMap::new();
-        price_map.insert(Item::SingleBalloon, 10);
-        price_map.insert(Item::TripleBalloons, 50);
-        price_map.insert(Item::HotAirBalloon, 200);
-        price_map.insert(Item::GliderBalloon, 1000);
         price_map.insert(Item::SodaBooster, 10);
-        price_map.insert(Item::FireworkBooster, 150);
-        price_map.insert(Item::RocketBooster, 500);
+        price_map.insert(Item::FireworkBooster, 30);
+        price_map.insert(Item::RocketBooster, 250);
         price_map.insert(Item::RacingVehicle, 10);
         price_map.insert(Item::SkiingVehicle, 50);
+        price_map.insert(Item::SingleBalloon, 25);
+        price_map.insert(Item::TripleBalloons, 75);
+        price_map.insert(Item::HotAirBalloon, 200);
+        price_map.insert(Item::GliderBalloon, 1000);
         return ItemPrices(price_map);
     }
 }
@@ -102,8 +102,9 @@ impl Plugin for ItemsPlugin {
 
 fn setup_items(mut inventory: ResMut<Inventory>) {
     *inventory = Inventory::default();
-    // inventory.items.insert(Item::SodaBooster);
-    // inventory.items.insert(Item::SingleBalloon);
+    // inventory.items.insert(Item::SkiingVehicle);
+    // inventory.items.insert(Item::RocketBooster);
+    // inventory.items.insert(Item::GliderBalloon);
 }
 
 #[derive(Component)]
@@ -693,8 +694,8 @@ fn apply_vehicle(
             commands.entity(current_vehicle).despawn();
         }
 
-        friction.coefficient = 0.05;
-        damping.linear_damping = 0.05;
+        friction.coefficient = 0.1;
+        damping.linear_damping = 0.15;
 
         let vehicle = commands
             .spawn((
@@ -722,8 +723,8 @@ fn apply_vehicle(
             commands.entity(current_vehicle).despawn();
         }
 
-        friction.coefficient = 0.10;
-        damping.linear_damping = 0.10;
+        friction.coefficient = 0.1;
+        damping.linear_damping = 0.20;
 
         let vehicle = commands
             .spawn((
@@ -751,8 +752,8 @@ fn apply_vehicle(
             commands.entity(current_vehicle).despawn();
         }
 
-        friction.coefficient = 0.15;
-        damping.linear_damping = 0.15;
+        friction.coefficient = 0.1;
+        damping.linear_damping = 0.25;
 
         let vehicle = commands
             .spawn((

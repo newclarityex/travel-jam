@@ -2,7 +2,7 @@ use crate::core::{items::Inventory, pause_manager::PauseState, player::Player, G
 use bevy::prelude::*;
 use bevy_egui::{
     egui::{
-        self, epaint::RectShape, Align, Align2, Area, Color32, Image, Label, Layout, Margin,
+        self, epaint::RectShape, Align, Align2, Area, Color32, Grid, Image, Label, Layout, Margin,
         Painter, Pos2, Rect, RichText, Rounding, Stroke, Style, TextureOptions, Vec2,
     },
     EguiContexts,
@@ -30,28 +30,62 @@ pub fn gui_system(
                 .outer_margin(Margin::same(0.))
                 .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 127))
                 .show(ui, |ui| {
-                    let distance = (player_transform.translation.x.max(0.) / 100.) as i32;
-                    ui.add(
-                        Label::new(
-                            RichText::new(format!("{} m", distance))
+                    Grid::new("stats_grid").min_col_width(128.).show(ui, |ui| {
+                        let distance = (player_transform.translation.x.max(0.) / 100.) as i32;
+                        ui.label(
+                            RichText::new("Distance: ")
                                 .size(32.)
                                 .strong()
                                 .family(egui::FontFamily::Monospace)
                                 .color(Color32::WHITE),
-                        )
-                        .wrap(false),
-                    );
-                    let velocity = (player_velocity.linvel.length() / 100.) as i32;
-                    ui.add(
-                        Label::new(
-                            RichText::new(format!("{} m/s", velocity))
+                        );
+                        ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
+                            ui.label(
+                                RichText::new(format!("{} m", distance))
+                                    .size(32.)
+                                    .strong()
+                                    .family(egui::FontFamily::Monospace)
+                                    .color(Color32::WHITE),
+                            );
+                        });
+                        ui.end_row();
+                        let altitude = (player_transform.translation.y.max(0.) / 100.) as i32;
+                        ui.label(
+                            RichText::new("Altitude: ")
                                 .size(32.)
                                 .strong()
                                 .family(egui::FontFamily::Monospace)
                                 .color(Color32::WHITE),
-                        )
-                        .wrap(false),
-                    );
+                        );
+                        ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
+                            ui.label(
+                                RichText::new(format!("{} m", altitude))
+                                    .size(32.)
+                                    .strong()
+                                    .family(egui::FontFamily::Monospace)
+                                    .color(Color32::WHITE),
+                            );
+                        });
+                        ui.end_row();
+                        let speed = (player_velocity.linvel.length() / 100.) as i32;
+                        ui.label(
+                            RichText::new("Speed: ")
+                                .size(32.)
+                                .strong()
+                                .family(egui::FontFamily::Monospace)
+                                .color(Color32::WHITE),
+                        );
+                        ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
+                            ui.label(
+                                RichText::new(format!("{} m/s", speed))
+                                    .size(32.)
+                                    .strong()
+                                    .family(egui::FontFamily::Monospace)
+                                    .color(Color32::WHITE),
+                            );
+                        });
+                        ui.end_row();
+                    });
                 });
         });
     // let pause_icon = egui::Image::new(egui::include_image!(
