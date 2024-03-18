@@ -58,7 +58,14 @@ fn start_game_music(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     music_channel: Res<AudioChannel<MusicChannel>>,
+    prev_handle: Res<GameMusic>,
+    mut audio_instances: ResMut<Assets<AudioInstance>>,
 ) {
+    if let Some(instance) = audio_instances.get_mut(&handle.0) {
+        instance.stop(AudioTween::default());
+    };
+
+    instance.stop(AudioTween::default());
     let asset_handle = asset_server.load("audio/music/game.ogg");
     let instance_handle = music_channel.play(asset_handle).looped().handle();
     commands.insert_resource(GameMusic(instance_handle));
