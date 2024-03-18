@@ -28,7 +28,7 @@ const YARN_SPAWN_RATE: i32 = 1;
 const BIG_YARN_SPAWN_CHANCE: f32 = 0.15;
 
 // Chance for catnip to spawn per chunk
-const CATNIP_SPAWN_CHANCE: f32 = 0.05;
+const CATNIP_SPAWN_CHANCE: f32 = 0.1;
 
 #[derive(Resource, Debug)]
 pub struct CurrentChunks(pub HashSet<IVec2>);
