@@ -57,15 +57,15 @@ pub struct ItemPrices(pub HashMap<Item, i32>);
 impl ItemPrices {
     fn new() -> ItemPrices {
         let mut price_map = HashMap::new();
-        price_map.insert(Item::SingleBalloon, 5);
-        price_map.insert(Item::TripleBalloons, 15);
-        price_map.insert(Item::HotAirBalloon, 50);
-        price_map.insert(Item::GliderBalloon, 250);
+        price_map.insert(Item::SingleBalloon, 10);
+        price_map.insert(Item::TripleBalloons, 50);
+        price_map.insert(Item::HotAirBalloon, 200);
+        price_map.insert(Item::GliderBalloon, 1000);
         price_map.insert(Item::SodaBooster, 10);
-        price_map.insert(Item::FireworkBooster, 50);
-        price_map.insert(Item::RocketBooster, 250);
+        price_map.insert(Item::FireworkBooster, 150);
+        price_map.insert(Item::RocketBooster, 500);
         price_map.insert(Item::RacingVehicle, 10);
-        price_map.insert(Item::SkiingVehicle, 25);
+        price_map.insert(Item::SkiingVehicle, 50);
         return ItemPrices(price_map);
     }
 }

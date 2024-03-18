@@ -37,7 +37,8 @@ impl Plugin for EnvironmentPlugin {
             .add_systems(OnEnter(GameState::Game), setup_environment)
             .add_systems(
                 Update,
-                update_bobbing_sprites.run_if(in_state(PauseState::Running)),
+                (update_bobbing_sprites, chunk_rendering::move_clouds)
+                    .run_if(in_state(PauseState::Running)),
             )
             .add_systems(
                 OnEnter(GameStage::Sledding),
