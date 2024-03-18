@@ -47,6 +47,123 @@ pub fn shop_menu_system(
                                 "../../../assets/sprites/yarn/yarn.png"
                             ));
                             ui.add_enabled_ui(
+                                !inventory.items.contains(&Item::SodaBooster),
+                                |ui| {
+                                    ui.vertical_centered(|ui| {
+                                        ui.label(RichText::new("Buy Soda Boost").size(18.));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::SodaBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
+                                        if res.clicked() {
+                                            let _ = inventory
+                                                .buy_item(Item::SodaBooster, &item_prices.0);
+                                        }
+                                    });
+                                },
+                            );
+                            ui.add_enabled_ui(
+                                inventory.items.contains(&Item::SodaBooster)
+                                    && !inventory.items.contains(&Item::FireworkBooster),
+                                |ui| {
+                                    ui.vertical_centered(|ui| {
+                                        ui.label(RichText::new("Buy Fireworks").size(18.));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::FireworkBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
+                                        if res.clicked() {
+                                            let _ = inventory
+                                                .buy_item(Item::FireworkBooster, &item_prices.0);
+                                        }
+                                    });
+                                },
+                            );
+                            ui.add_enabled_ui(
+                                inventory.items.contains(&Item::FireworkBooster)
+                                    && !inventory.items.contains(&Item::RocketBooster),
+                                |ui| {
+                                    ui.vertical_centered(|ui| {
+                                        ui.label(RichText::new("Buy Rocket").size(18.));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::RocketBooster)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
+                                        if res.clicked() {
+                                            let _ = inventory
+                                                .buy_item(Item::RocketBooster, &item_prices.0);
+                                        }
+                                    });
+                                },
+                            );
+                            ui.end_row();
+
+                            ui.add_enabled_ui(
+                                !inventory.items.contains(&Item::RacingVehicle),
+                                |ui| {
+                                    ui.vertical_centered(|ui| {
+                                        ui.label(RichText::new("Buy Racer Box").size(18.));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::RacingVehicle)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
+                                        if res.clicked() {
+                                            let _ = inventory
+                                                .buy_item(Item::RacingVehicle, &item_prices.0);
+                                        }
+                                    });
+                                },
+                            );
+                            ui.add_enabled_ui(
+                                inventory.items.contains(&Item::RacingVehicle)
+                                    && !inventory.items.contains(&Item::SkiingVehicle),
+                                |ui| {
+                                    ui.vertical_centered(|ui| {
+                                        ui.label(RichText::new("Buy Skiing Box").size(18.));
+                                        let res = ui
+                                            .add(Button::image_and_text(
+                                                yarn_icon.clone(),
+                                                item_prices
+                                                    .0
+                                                    .get(&Item::SkiingVehicle)
+                                                    .unwrap_or(&-1)
+                                                    .to_string(),
+                                            ))
+                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
+                                        if res.clicked() {
+                                            let _ = inventory
+                                                .buy_item(Item::SkiingVehicle, &item_prices.0);
+                                        }
+                                    });
+                                },
+                            );
+                            ui.end_row();
+
+                            ui.add_enabled_ui(
                                 !inventory.items.contains(&Item::SingleBalloon),
                                 |ui| {
                                     ui.vertical_centered(|ui| {
@@ -134,123 +251,6 @@ pub fn shop_menu_system(
                                         if res.clicked() {
                                             let _ = inventory
                                                 .buy_item(Item::GliderBalloon, &item_prices.0);
-                                        }
-                                    });
-                                },
-                            );
-
-                            ui.end_row();
-                            ui.add_enabled_ui(
-                                !inventory.items.contains(&Item::SodaBooster),
-                                |ui| {
-                                    ui.vertical_centered(|ui| {
-                                        ui.label(RichText::new("Buy Soda Boost").size(18.));
-                                        let res = ui
-                                            .add(Button::image_and_text(
-                                                yarn_icon.clone(),
-                                                item_prices
-                                                    .0
-                                                    .get(&Item::SodaBooster)
-                                                    .unwrap_or(&-1)
-                                                    .to_string(),
-                                            ))
-                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
-                                        if res.clicked() {
-                                            let _ = inventory
-                                                .buy_item(Item::SodaBooster, &item_prices.0);
-                                        }
-                                    });
-                                },
-                            );
-                            ui.add_enabled_ui(
-                                inventory.items.contains(&Item::SodaBooster)
-                                    && !inventory.items.contains(&Item::FireworkBooster),
-                                |ui| {
-                                    ui.vertical_centered(|ui| {
-                                        ui.label(RichText::new("Buy Fireworks").size(18.));
-                                        let res = ui
-                                            .add(Button::image_and_text(
-                                                yarn_icon.clone(),
-                                                item_prices
-                                                    .0
-                                                    .get(&Item::FireworkBooster)
-                                                    .unwrap_or(&-1)
-                                                    .to_string(),
-                                            ))
-                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
-                                        if res.clicked() {
-                                            let _ = inventory
-                                                .buy_item(Item::FireworkBooster, &item_prices.0);
-                                        }
-                                    });
-                                },
-                            );
-                            ui.add_enabled_ui(
-                                inventory.items.contains(&Item::FireworkBooster)
-                                    && !inventory.items.contains(&Item::RocketBooster),
-                                |ui| {
-                                    ui.vertical_centered(|ui| {
-                                        ui.label(RichText::new("Buy Rocket").size(18.));
-                                        let res = ui
-                                            .add(Button::image_and_text(
-                                                yarn_icon.clone(),
-                                                item_prices
-                                                    .0
-                                                    .get(&Item::RocketBooster)
-                                                    .unwrap_or(&-1)
-                                                    .to_string(),
-                                            ))
-                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
-                                        if res.clicked() {
-                                            let _ = inventory
-                                                .buy_item(Item::RocketBooster, &item_prices.0);
-                                        }
-                                    });
-                                },
-                            );
-
-                            ui.end_row();
-                            ui.add_enabled_ui(
-                                !inventory.items.contains(&Item::RacingVehicle),
-                                |ui| {
-                                    ui.vertical_centered(|ui| {
-                                        ui.label(RichText::new("Buy Racer Box").size(18.));
-                                        let res = ui
-                                            .add(Button::image_and_text(
-                                                yarn_icon.clone(),
-                                                item_prices
-                                                    .0
-                                                    .get(&Item::RacingVehicle)
-                                                    .unwrap_or(&-1)
-                                                    .to_string(),
-                                            ))
-                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
-                                        if res.clicked() {
-                                            let _ = inventory
-                                                .buy_item(Item::RacingVehicle, &item_prices.0);
-                                        }
-                                    });
-                                },
-                            );
-                            ui.add_enabled_ui(
-                                inventory.items.contains(&Item::RacingVehicle)
-                                    && !inventory.items.contains(&Item::SkiingVehicle),
-                                |ui| {
-                                    ui.vertical_centered(|ui| {
-                                        ui.label(RichText::new("Buy Skiing Box").size(18.));
-                                        let res = ui
-                                            .add(Button::image_and_text(
-                                                yarn_icon.clone(),
-                                                item_prices
-                                                    .0
-                                                    .get(&Item::SkiingVehicle)
-                                                    .unwrap_or(&-1)
-                                                    .to_string(),
-                                            ))
-                                            .on_hover_cursor(egui::CursorIcon::PointingHand);
-                                        if res.clicked() {
-                                            let _ = inventory
-                                                .buy_item(Item::SkiingVehicle, &item_prices.0);
                                         }
                                     });
                                 },
