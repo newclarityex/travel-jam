@@ -159,14 +159,14 @@ fn apply_booster(
         }
 
         let texture = asset_server.load("sprites/items/rocket_booster.png");
-        let layout = TextureAtlasLayout::from_grid(Vec2::new(22.0, 7.0), 20, 1, None, None);
+        let layout = TextureAtlasLayout::from_grid(Vec2::new(22.0, 7.0), 19, 1, None, None);
         let texture_atlas_layout = texture_atlas_layouts.add(layout);
 
         let blasting_animation = AnimationData {
             texture,
             layout: texture_atlas_layout,
-            frame_count: 20,
-            frame_durations: vec![6; 20],
+            frame_count: 19,
+            frame_durations: vec![6; 19],
             anchor: Anchor::Center,
         };
 
