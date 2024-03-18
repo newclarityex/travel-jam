@@ -171,6 +171,62 @@ const FLOOR_CHUNKS: &'static [&'static str] = &[
     "sprites/floor/1.png",
     "sprites/floor/2.png",
 ];
+
+const CLOUD_MIN_HEIGHT: f32 = 1_000.;
+const CLOUD_DOUBLE_HEIGHT: f32 = 2_500.;
+
+#[derive(Component)]
+pub struct Cloud {
+    speed: f32,
+}
+
+const CLOUD_SPRITES: &'static [&'static str] = &[
+    "sprites/clouds/0.png",
+    "sprites/clouds/1.png",
+    "sprites/clouds/2.png",
+];
+// Chance for catnip to spawn per chunk
+// const CLOUD_SPAWN_CHANCE: f32 = 0.15;
+const CLOUD_SPAWN_CHANCE: f32 = 0.45;
+
+fn try_spawn_cloud(
+    mut commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    chunk: IVec2,
+    x_range: Range<f32>,
+    y_range: Range<f32>,
+) {
+    let mut rng = rand::thread_rng();
+
+    let spawn_location = Vec2::new(
+        rng.gen_range(x_range.clone()),
+        rng.gen_range(y_range.clone()),
+    );
+
+    if spawn_location.x < COLLECTABLES_X_FLOOR || spawn_location.y < CLOUD_MIN_HEIGHT {
+        return;
+    };
+
+    commands.spawn((
+        Cloud {
+            speed: rng.gen_range((5.)..(20.)),
+        },
+        SpriteBundle {
+            texture: asset_server.load(CLOUD_SPRITES.choose(&mut rng).unwrap().to_string()),
+            transform: Transform::from_translation(spawn_location.extend(-0.5)),
+            ..default()
+        },
+        RenderCleanup { chunk },
+        CleanupEntity,
+    ));
+}
+
+pub fn move_clouds(mut query: Query<(&Cloud, &mut Transform)>, time: Res<Time>) {
+    for (cloud, mut transform) in query.iter_mut() {
+        transform.translation.x -= time.delta_seconds() * cloud.speed;
+    }
+}
+
 pub fn update_chunks(
     mut commands: Commands,
     hitbox_assets: Res<HitboxAssets>,
@@ -266,6 +322,20 @@ pub fn update_chunks(
                 &mut commands,
                 &image_assets,
                 &hitbox_assets,
+                chunk.clone(),
+                chunk_x_range.clone(),
+                chunk_y_range.clone(),
+            );
+        }
+        let mut cloud_chance = CLOUD_SPAWN_CHANCE.into();
+        if chunk_pos.y >= CLOUD_DOUBLE_HEIGHT {
+            cloud_chance *= 2.;
+        }
+
+        if rng.gen_bool(cloud_chance) {
+            try_spawn_cloud(
+                &mut commands,
+                &asset_server,
                 chunk.clone(),
                 chunk_x_range.clone(),
                 chunk_y_range.clone(),
