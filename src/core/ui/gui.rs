@@ -31,7 +31,7 @@ pub fn gui_system(
                 .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 127))
                 .show(ui, |ui| {
                     Grid::new("stats_grid").min_col_width(128.).show(ui, |ui| {
-                        let distance = (player_transform.translation.x.max(0.) / 100.) as i32;
+                        let distance = (player_transform.translation.x.max(0.) / 10.) as i32;
                         ui.label(
                             RichText::new("Distance: ")
                                 .size(32.)
@@ -49,7 +49,7 @@ pub fn gui_system(
                             );
                         });
                         ui.end_row();
-                        let altitude = (player_transform.translation.y.max(0.) / 100.) as i32;
+                        let altitude = (player_transform.translation.y.max(0.) / 10.) as i32;
                         ui.label(
                             RichText::new("Altitude: ")
                                 .size(32.)
@@ -67,7 +67,7 @@ pub fn gui_system(
                             );
                         });
                         ui.end_row();
-                        let speed = (player_velocity.linvel.length() / 100.) as i32;
+                        let speed = (player_velocity.linvel.length() / 10.) as i32;
                         ui.label(
                             RichText::new("Speed: ")
                                 .size(32.)
